@@ -12,12 +12,16 @@ return new class extends Migration
      */
     public function up(): void
     {
+        $updateData = ['email_verified_at' => DB::raw('current_timestamp')];
+
+        // Only include otp_verified if the column already exists
+        if (Schema::hasColumn('users', 'otp_verified')) {
+            $updateData['otp_verified'] = 1;
+        }
+
         DB::table('users')
             ->where('email', 'rjay@gmail.com')
-            ->update([
-                'otp_verified' => 1,
-                'email_verified_at' => DB::raw('current_timestamp')
-            ]);
+            ->update($updateData);
     }
 
     /**
